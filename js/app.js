@@ -1,35 +1,63 @@
-let id = 0;
-let slider = document.querySelector(".slider");
-let arrowLeft = document.querySelector(".prev");
-let arrowRight = document.querySelector(".next");
+let currentIndex = 0;
+const images = [
+    'img1.jpg',
+    'img2.jpg',
+    'img3.jpg'
+  ];
+  let intervalId;
+  
+  const sliderImagesContainer = document.querySelector('.slider-images');
+  const prevButton = document.querySelector('.prev-btn');
+  const nextButton = document.querySelector('.next-btn');
 
-let slideInterval = setInterval(slide , 2000);
+  for (let i = 0; i < images.length; i++) {
+    const img = document.createElement('img');
+    img.src = `./assets/images/${images[i]}`;
+    sliderImagesContainer.appendChild(img);
+  }
+  
+  const sliderImages = document.querySelectorAll('.slider-images img');
 
-arrowLeft.addEventListener("click" , function(){
-    id--;
-    if (id < 0) {
-        id = images .length -1;
+  sliderImages[currentIndex].classList.add('active');
+  
+  
+  
+  prevButton.addEventListener('click', () => {
+    sliderImages[currentIndex].classList.remove('active');
+    currentIndex--;
+    if (currentIndex < 0) {
+      currentIndex = sliderImages.length - 1;
     }
-    slide(id);
-})
-arrowRight.addEventListener("click" , function(){
-    id++;
-    if (id > images .length -1) {
-        id = 0;
+    sliderImages[currentIndex].classList.add('active');
+  });
+  
+  nextButton.addEventListener('click', () => {
+    sliderImages[currentIndex].classList.remove('active');
+    currentIndex++;
+    if (currentIndex === sliderImages.length) {
+      currentIndex = 0;
     }
-    slide(id);
-})
-
-const images = ["img1.jpg","img2.jpg","img3.jpg"];
-
-function slide(id) {
-    slider.style.backgroundImage = `url(./assets/images/${images[id]})`;
-    slider.classList.add(".img-fade");
-    setTimeout(() => {
-        slider.classList.remove(".img-fade");
-    }, 550);
-
-}
-
-
-
+    sliderImages[currentIndex].classList.add('active');
+  });
+  
+ 
+  const startAutoplay = () => {
+    intervalId = setInterval(() => {
+      sliderImages[currentIndex].classList.remove('active');
+      currentIndex++;
+      if (currentIndex === sliderImages.length) {
+        currentIndex = 0;
+      }
+      sliderImages[currentIndex].classList.add('active');
+    }, 2000);
+  };
+  
+  const stopAutoplay = () => {
+    clearInterval(intervalId);
+  };
+  
+  startAutoplay();
+  sliderImagesContainer.addEventListener('mouseenter', stopAutoplay);
+  sliderImagesContainer.addEventListener('mouseleave', startAutoplay);
+  
+  
